@@ -313,7 +313,7 @@ fileprivate func dismissPopover() {
    Task { @MainActor in
        if let window = AppDelegate.window {
            
-           func findPopover(in view: UIView) -> CenteredPopoverWrapper? {
+           @MainActor func findPopover(in view: UIView) -> CenteredPopoverWrapper? {
                if let popover = view as? CenteredPopoverWrapper {
                    return popover
                }

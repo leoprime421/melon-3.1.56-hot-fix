@@ -119,7 +119,7 @@ struct EmulationView: View {
             
             RegisterCallback("exit-emulation") { cool in
                Task { @MainActor in
-                    print(cool)
+                    print(cool as Any)
                     self.stop()
                 }
             }

@@ -37,12 +37,16 @@ final class MacClassicAlertViewController: UIViewController {
         
         
         let effect: UIVisualEffect
-        if #available(iOS 19, *), !NativeSettingsManager.shared.disableLiquidGlass.value {
+        #if compiler(>=6.0)
+        if #available(iOS 18.0, *), !NativeSettingsManager.shared.disableLiquidGlass.value {
             effect = UIGlassEffect(style: .regular)
         } else {
             effect = UIBlurEffect(style: .systemMaterial)
         }
-        
+        #else
+        effect = UIBlurEffect(style: .systemMaterial)
+        #endif
+
         let visualEffect = UIVisualEffectView(effect: effect)
         visualEffect.backgroundColor = .clear
         visualEffect.layer.cornerRadius = 20

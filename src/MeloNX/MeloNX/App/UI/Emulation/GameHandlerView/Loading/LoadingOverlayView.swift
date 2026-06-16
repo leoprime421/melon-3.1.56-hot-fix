@@ -130,7 +130,7 @@ struct LoadingOverlayView: View {
             print("cool, first frame! :3")
             Task { @MainActor in
                 withAnimation(.easeOut(duration: 0.3)) {
-                    if let game {
+                    if game != nil {
                         Task {
                            //  await GamePlaytimeManager.shared.startSavingPlaytime(game)
                         }

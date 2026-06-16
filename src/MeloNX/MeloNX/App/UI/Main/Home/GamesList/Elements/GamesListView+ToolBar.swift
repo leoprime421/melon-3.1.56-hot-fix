@@ -9,7 +9,8 @@ import SwiftUI
 
 extension GamesListView {
     func toolbarHandler() -> some ToolbarContent {
-        if #available(iOS 19.0, *) {
+        #if compiler(>=6.0)
+        if #available(iOS 18.0, *) {
             return Group {
                 ToolbarItem(placement: .topBarTrailing) {
                     addGameButton
@@ -21,15 +22,16 @@ extension GamesListView {
                 }
                 .sharedBackgroundVisibility(nativeSettings.disableLiquidGlass.value ? .hidden : .automatic)
             }
-        } else {
-            return Group {
-                ToolbarItem(placement: .topBarTrailing) {
-                    addGameButton
-                }
-                
-                ToolbarItem(placement: .topBarLeading) {
-                    optionsSection
-                }
+        }
+        #endif
+
+        return Group {
+            ToolbarItem(placement: .topBarTrailing) {
+                addGameButton
+            }
+
+            ToolbarItem(placement: .topBarLeading) {
+                optionsSection
             }
         }
     }
