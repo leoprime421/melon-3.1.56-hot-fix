@@ -1,0 +1,63 @@
+name: iOS Build IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+    paths:
+      - 'src/**'
+      - 'distribution/ios/**'
+      - '.github/workflows/ios-ipa.yml'
+
+jobs:
+  build:
+    name: Build IPA
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Build Ryujinx.Headless.SDL2 (iOS)
+        run: |
+          dotnet publish -c Release -r ios-arm64 -p:ExtraDefineConstants=DISABLE_UPDATER src/Ryujinx.Headless.SDL2 --self-contained true
+
+      - name: Copy dylib to Xcode project
+        run: |
+          mkdir -p "src/MeloNX/MeloNX/Dependencies/Dynamic Libraries"
+          cp "src/Ryujinx.Headless.SDL2/bin/Release/net8.0/ios-arm64/native/Ryujinx.Headless.SDL2.dylib" "src/MeloNX/MeloNX/Dependencies/Dynamic Libraries/"
+
+      - name: Set up Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Build Archive
+        run: |
+          cd src/MeloNX
+          xcodebuild archive \
+            -project MeloNX.xcodeproj \
+            -scheme MeloNX \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath MeloNX.xcarchive \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            AD_HOC_CODE_SIGNING_ALLOWED=YES
+
+      - name: Create IPA
+        run: |
+          cd src/MeloNX
+          mkdir -p Payload
+          cp -r MeloNX.xcarchive/Products/Applications/MeloNX.app Payload/
+          zip -r MeloNX.ipa Payload
+          
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MeloNX-iOS-IPA
+          path: src/MeloNX/MeloNX.ipa
