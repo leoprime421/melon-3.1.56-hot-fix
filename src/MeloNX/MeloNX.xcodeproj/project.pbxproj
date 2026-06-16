@@ -320,7 +320,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				4EA9760D2E645BBE006A2EFB /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				4E80A98F2CD6F54500029585 /* MeloNX */,

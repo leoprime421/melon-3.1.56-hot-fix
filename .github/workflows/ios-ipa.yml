@@ -4,10 +4,6 @@ on:
   workflow_dispatch:
   push:
     branches: [ master ]
-    paths:
-      - 'src/**'
-      - 'distribution/ios/**'
-      - '.github/workflows/ios-ipa.yml'
 
 jobs:
   build:
